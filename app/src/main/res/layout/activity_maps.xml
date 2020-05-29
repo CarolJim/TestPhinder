@@ -15,6 +15,7 @@
         android:layout_weight="8"/>
 
    <EditText
+       android:id="@+id/ed_coor"
        android:layout_width="match_parent"
        android:layout_height="0dp"
        android:layout_weight="1"
@@ -26,6 +27,7 @@
        />
 
     <Button
+        android:id="@+id/btn_gps"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
