@@ -1,13 +1,15 @@
 package com.example.testphinder
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
-import androidx.appcompat.app.AppCompatActivity
+import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -36,7 +38,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         mapFragment.getMapAsync(this)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
     }
+
+    //trazar ruta en mapa
+    btn_gps.setOnClickListener{
+            val gmmIntentUri = Uri.parse(
+                "google.navigation:q=" + actividadSeri.getLatitud()
+                    .toDouble() + "," + actividadSeri.getLongitud().toDouble() + "&mode=d"
+            )
+            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+            mapIntent.setPackage("com.google.android.apps.maps")
+            startActivity(mapIntent)
+        }
+
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -65,9 +80,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 val currentLatLng = LatLng(location.latitude, location.longitude)
                 placeMarker(currentLatLng)
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 13f))
+
             }
 
         }
     }
+
+
 
 }
