@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">TestPhinder</string>
     <string name="title_activity_maps">Map</string>
-    <string name="numbers">0123456789,-.</string>
+    <string name="numbers">0123456789,</string>
 </resources>
