@@ -18,8 +18,7 @@ class Interactor : Contracts.interactor {
         call.enqueue(object : Callback<DataModel> {
             override fun onResponse(call: retrofit2.Call<DataModel>?, response: retrofit2.Response<DataModel>?) {
                 response.toString()
-                //listaSupers.addAll(response!!.body()!!.albumid)
-                presenter.showData()
+                presenter.showData(response!!.message())
             }
             override fun onFailure(call: retrofit2.Call<DataModel>?, t: Throwable?) {
                 t.toString()

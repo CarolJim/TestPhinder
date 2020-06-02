@@ -1,16 +1,19 @@
 package com.example.testphinder
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
-import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.example.testphinder.ui.Contracts
+import com.example.testphinder.ui.Service
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -22,16 +25,20 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.activity_maps.*
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener{
+
+
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, Contracts.Router{
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var lastLocation : Location
+    private lateinit var router: Contracts.Router
 
     companion object{
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
     }
 
     private lateinit var mMap: GoogleMap
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,12 +53,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     }
 
-    private fun initViews() {
+     private fun initViews() {
         ed_coor.addTextChangedListener(textWatcher)
         btn_gps.setOnClickListener { validateCoordenates() }
     }
 
+
+
     private val textWatcher = object : TextWatcher {
+
         override fun afterTextChanged(s: Editable?) {
             if (s.toString().length == 2){
                 s?.append(',')
@@ -62,25 +72,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            if (ed_coor.text.length == 5){
+                val imm= getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(ed_coor.windowToken,0)
+            }
         }
 
     }
 
-    /*  //trazar ruta en mapa
-      btn_gps.setOnClickListener{
-              val gmmIntentUri = Uri.parse(
-                  "google.navigation:q=" + lastLocation.getLatitud()
-                      .toDouble() + "," + actividadSeri.getLongitud().toDouble() + "&mode=d"
-              )
-              val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-              mapIntent.setPackage("com.google.android.apps.maps")
-              startActivity(mapIntent)
-          }*/
-
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
         mMap.setOnMarkerClickListener(this)
         mMap.uiSettings.isZoomControlsEnabled = true
         setUpMap()
@@ -121,15 +123,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         fusedLocationClient.lastLocation.addOnSuccessListener(this) {location ->
             if (location != null){
                 lastLocation = location
-
                 val currentLatLng = LatLng(location.latitude, location.longitude)
                 placeMarker(currentLatLng)
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 13f))
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 11f))
 
             }
 
         }
     }
+
 
 
     private fun validateCoordenates() {
@@ -148,6 +150,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
 
         }
+    }
+
+    override fun showNext() {
+        val intent = Intent(this, Service::class.java)
+        startActivity(intent)
     }
 
 

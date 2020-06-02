@@ -4,7 +4,7 @@ class Contracts {
 
     interface Presenter{
         fun initViews()
-        fun showData()
+        fun showData(message: String)
 
     }
 
@@ -13,6 +13,7 @@ class Contracts {
     }
 
     interface Router {
+        fun showNext()
 
     }
 
